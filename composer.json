@@ -9,5 +9,16 @@
         "psr-4": {
             "src\\": "src/"
         }
+    },
+    "scripts": {
+        "dev": "php -S localhost:8080 -t public"
+    },
+    "require-dev": {
+        "pestphp/pest": "^3.7"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
     }
 }
