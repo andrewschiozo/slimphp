@@ -9,7 +9,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class AgendamentoController {
 
     public function listar(Request $request, Response $response) : Response {        
-        $agendamentos = Agendamento::all()->sortByDesc("data_hora");
+        $agendamentos = Agendamento::with('sala')->get()->sortByDesc("data_hora");
 
         $json = json_encode($agendamentos);
         $response->getBody()->write($json);
@@ -17,7 +17,7 @@ class AgendamentoController {
     }
 
     public function listarProximos(Request $request, Response $response) : Response {
-        $agendamentos = Agendamento::where('data_hora', '>=', date('Y-m-d H:i'))->get();
+        $agendamentos = Agendamento::with('sala')->where('data_hora', '>=', date('Y-m-d H:i'))->get();
         
         $json = json_encode($agendamentos);
         $response->getBody()->write($json);
@@ -36,7 +36,7 @@ class AgendamentoController {
     /**
      * Salvar agendamento
      * 
-     * @param Request $request {data, horario, sala, outra-sala, organizador, observacoes}
+     * @param Request $request {data, horario, sala_id, outra-sala, setor_id, organizador, observacoes}
      * @param Response $response
      * 
      * @return Response
@@ -45,17 +45,14 @@ class AgendamentoController {
         $data = (array) $request->getParsedBody();
 
         $data['data_hora'] = $data['data'] . ' ' . $data['horario'];
-        $data['sala'] .= $data['sala'] === 'Outro' ? ' (' . $data['outra-sala'] . ')' : '';
+        $data['observacoes'] .= $data['sala_id'] === 3 ? ' (Sala: ' . $data['outra-sala'] . ')' : '';
         
         $agenda = new Agendamento($data);
 
-        $result = Agendamento::where([
-            'data_hora' => $data['data_hora'],
-            'sala' => $data['sala']
-        ])->first();
+        $result = Agendamento::where(['data_hora' => $data['data_hora'], 'sala_id' => $data['sala_id']])->first();
 
         if($result) {
-            $message = "Já existe agendamento para a sala {$result->sala} na data " . date('d/m/Y H:i', strtotime($result->data_hora));
+            $message = "Já existe agendamento para a sala {$result->sala->nome} na data " . date('d/m/Y H:i', strtotime($result->data_hora));
             
             $json = json_encode(['message' => $message]);
             $response->getBody()->write($json);
