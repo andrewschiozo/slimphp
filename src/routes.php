@@ -1,37 +1,13 @@
 <?php
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use src\Controllers\AgendaController;
 
-// $app->get('/json', function (Request $request, Response $response, $args) {
-//     $json = json_encode(['hello' => 'world']);
-    
-    
-//     $response->getBody()->write($json);
-//     return $response->withHeader('Content-Type', 'application/json');
-// });
+use src\Middleware\JsonBodyParserMiddleware;
 
-
-$app->get('/', function (Request $request, Response $response) use ($renderer) {
-    return $response->withHeader('Location', '/agendamentos')->withStatus(302);
+$app->get('/', function ($request, $response, $args) {
+    $response->getBody()->write(json_encode(['message' => 'Hello world!']));
+    return $response;
 });
 
-$app->get('/agendamentos', function (Request $request, Response $response) use ($renderer) {
-    $controller = new AgendaController($renderer);
-    return $controller->listar($request, $response);
-});
-
-$app->get('/agendamentos/proximos', function (Request $request, Response $response) use ($renderer) {
-    $controller = new AgendaController($renderer);
-    return $controller->listarProximas($request, $response);
-});
-
-$app->get('/agendamento/{id}', function (Request $request, Response $response, $id) use ($renderer) {
-    $controller = new AgendaController($renderer);
-    return $controller->ver($request, $response, $id);
-});
-
-$app->post('/agendamento', function (Request $request, Response $response) use ($renderer) {
-    $controller = new AgendaController($renderer);
-    return $controller->salvar($request, $response);
-});
+$app->get('/agendamentos', [\src\Agendamento\Controllers\AgendamentoController::class, 'listar']);
+$app->get('/agendamentos/proximos', [\src\Agendamento\Controllers\AgendamentoController::class, 'listarProximos']);
+$app->get('/agendamento/{id}', [\src\Agendamento\Controllers\AgendamentoController::class, 'ver']);
+$app->post('/agendamento', [\src\Agendamento\Controllers\AgendamentoController::class, 'salvar'])->add(new JsonBodyParserMiddleware());
