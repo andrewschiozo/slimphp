@@ -1,16 +1,22 @@
 <?php
 
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Slim\Factory\AppFactory;
-use Slim\Views\PhpRenderer;
+// use Slim\Views\PhpRenderer;
 use Illuminate\Database\Capsule\Manager as Capsule;
-use Psr\Http\Message\ResponseInterface as Response;
 
 require __DIR__ . '/../vendor/autoload.php';
 
 $app = AppFactory::create();
 
 //PhpRenderer
-$renderer = new PhpRenderer(__DIR__ . '/../src/views');
+// $renderer = new PhpRenderer(__DIR__ . '/../src/views');
+
+//Middleware
+$app->add(function (Request $request, RequestHandler $handler) {
+    return $handler->handle($request);
+});
 
 //Eloquent
 $capsule = new Capsule;
