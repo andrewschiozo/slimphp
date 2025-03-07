@@ -50,7 +50,7 @@ class AgendaController {
         $agendamento = Agenda::where('id', $id)->first();
         
         if(!$agendamento) {
-            return $response->withHeader('Location', '/agendamentos')->withStatus(302);
+            return $response->withHeader('Location', '/agenda_reuniao/agendamentos')->withStatus(302);
         }
 
         $view = $this->renderer->fetch('agendamento/AgendamentoView.php', ['agendamento' => $agendamento]);
@@ -93,6 +93,6 @@ class AgendaController {
         // $response->getBody()->write($json);
         // return $response->withHeader('Content-Type', 'application/json')->withStatus(201);
 
-        return $response->withHeader('Location', '/agendamentos')->withStatus(302);
+        return $response->withHeader('Location', '/agenda_reuniao/agendamentos')->withStatus(302);
     }
 }

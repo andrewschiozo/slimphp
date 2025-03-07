@@ -1,19 +1,20 @@
 <?php
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Views\PhpRenderer;
 use src\Controllers\AgendaController;
+//PhpRenderer
+$renderer = new PhpRenderer(__DIR__ . '/../src/views');
 
 // $app->get('/json', function (Request $request, Response $response, $args) {
 //     $json = json_encode(['hello' => 'world']);
-    
-    
 //     $response->getBody()->write($json);
 //     return $response->withHeader('Content-Type', 'application/json');
 // });
 
 
-$app->get('/', function (Request $request, Response $response) use ($renderer) {
-    return $response->withHeader('Location', '/agendamentos')->withStatus(302);
+$app->get('/', function (Request $request, Response $response) use ($renderer, $app) {
+    return $response->withHeader('Location', $app->getBasePath() . '/agendamentos')->withStatus(302);
 });
 
 $app->get('/agendamentos', function (Request $request, Response $response) use ($renderer) {

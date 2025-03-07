@@ -1,5 +1,5 @@
 <h2 class="text-2xl mb-4">Agendamento #</h2>
-<form method="POST" action="/agendamento">
+<form method="POST" action="/agenda_reuniao/agendamento">
     <div class="mb-4">
         <label for="data" class="block text-sm font-medium text-gray-700">Data</label>
         <input id="data" type="date" name="data" value="<?= date('Y-m-d'); ?>" min="<?= date('Y-m-d'); ?>" onchange= "validarDataHorario()" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3" required>
